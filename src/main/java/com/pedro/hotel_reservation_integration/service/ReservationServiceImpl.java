@@ -3,7 +3,7 @@ package com.pedro.hotel_reservation_integration.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
+
 import com.pedro.hotel_reservation_integration.exception.ResourceNotFoundException;
 
 
@@ -12,7 +12,6 @@ import com.pedro.hotel_reservation_integration.dto.ReservationRequest;
 import com.pedro.hotel_reservation_integration.dto.ReservationResponse;
 import com.pedro.hotel_reservation_integration.entity.Reservation;
 import com.pedro.hotel_reservation_integration.entity.enums.ReservationStatus;
-import com.pedro.hotel_reservation_integration.exception.ResourceNotFoundException;
 import com.pedro.hotel_reservation_integration.mapper.ReservationMapper;
 import com.pedro.hotel_reservation_integration.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,62 +1,168 @@
-# Hotel Reservation Integration
+# Hotel Reservation Integration 🏨
 
-## Tecnologias
+## Sobre o projeto 🔎
 
-- Java 21 ✔️
-- Spring Boot ✔️
-- PostgreSQL ✔️
-- Spring Data JPA ✔️
-- Spring Security ✔️
-- MapStruct ✔️
-- Maven ✔️
+Este projeto implementa um serviço de integração de reservas de hotéis utilizando Java 21 e Spring Boot.
 
-## Arquitetura em camadas
+A aplicação simula o funcionamento de conectores utilizados por plataformas como Omnibees, Booking e Expedia, permitindo o recebimento de reservas por Polling e por Webhook.
 
-controller ✔️
-service ✔️
-repository ✔️
-entity ✔️
-dto ✔️
-mapper ✔️
-config ✔️
-exception ✔️
-scheduler ✔️
-integration ✔️
-security ✔️
+---
 
-## Como executar
+## Tecnologias 🧑‍💻
+
+- Java 21 ✅
+- Spring Boot 4 ✅
+- Spring Data JPA ✅
+- PostgreSQL ✅
+- Spring Security ✅
+- MapStruct ✅
+- Bean Validation ✅
+- Maven ✅
+- Spring Scheduler ✅
+- Actuator ✅
+- OpenAPI / Swagger ✅
+
+---
+
+## Arquitetura 📁
+
 ```
-1. Subir PostgreSQL
-
-2. Configurar application.yml ( application.properties )
-
-3. mvn clean install
-
-4. mvn spring-boot:run
+controller
+service
+repository
+entity
+dto
+mapper
+config
+security
+exception
+scheduler
+integration
 ```
 
-## Endpoints
+O projeto segue arquitetura em camadas, separando responsabilidades entre API, regras de negócio, persistência e integração. ✨
+
+---
+
+## Funcionalidades 🙌
+
+### Polling ⏳
+
+Um Scheduler executa periodicamente uma consulta ao parceiro externo (simulado por um mock interno) para buscar novas reservas.
+
 ```
-GET /api/reservations
+Scheduler
+        ↓
+Mock Omnibees
+        ↓
+ReservationService
+        ↓
+PostgreSQL
+```
 
-GET /api/reservations/{id}
+---
 
+### Webhook 📫
+
+Também é possível receber reservas diretamente pela API:
+
+```
 POST /api/reservations
+```
 
-DELETE /api/reservations/{id}
+---
 
+### Atualização 🔄️
+
+Caso uma reserva já exista (mesmo `reservationId`), seus dados são atualizados.
+
+---
+
+### Cancelamento ❌
+
+Quando o status recebido é `CANCELLED`, a reserva é cancelada logicamente.
+
+Os dados permanecem armazenados no banco de dados.
+
+---
+
+### Idempotência 🆔
+
+A aplicação garante que não existam reservas duplicadas utilizando o campo `reservationId`.
+
+---
+
+## Banco de dados 💱
+
+Foi utilizado PostgreSQL com Spring Data JPA.
+
+---
+
+## Segurança 🔏
+
+Os endpoints REST são protegidos com Basic Authentication.
+
+O endpoint utilizado para simulação da integração (`/mock/**`) permanece liberado para permitir que o Scheduler realize as consultas automaticamente.
+
+---
+
+## Endpoints 👾
+
+### Reservas 🏞️
+
+```
+POST   /api/reservations
+GET    /api/reservations
+GET    /api/reservations/{reservationId}
+DELETE /api/reservations/{reservationId}
+```
+
+### Mock 🧱
+
+```
 GET /mock/omnibees/reservations
+```
 
+### Monitoramento 🖥️
+
+```
 GET /actuator/health
 ```
 
-## Fluxo
+### Swagger 📃
+
 ```
-Scheduler
+http://localhost:8080/swagger-ui/index.html
+```
+
+---
+
+## Como executar 🤔
+
+```bash
+mvn clean install
+```
+
+Depois:
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+## Fluxo da aplicação ⛲
+
+```
+Parceiro (Omnibees)
 
 ↓
 
-Mock Omnibees
+Mock
+
+↓
+
+Scheduler
 
 ↓
 
@@ -64,33 +170,29 @@ ReservationService
 
 ↓
 
-Banco PostgreSQL
+PostgreSQL
 
 ↓
 
-Consulta via API
+API REST
 ```
-
-## Funcionalidades implementadas
-
-✔ Polling
-
-✔ Webhook
-
-✔ Atualização
-
-✔ Cancelamento lógico
-
-✔ Idempotência
-
-✔ Validação
-
-✔ Logs
-
-✔ Basic Authentication
-
-✔ Actuator
 
 ---
 
-Desenvolvido por Pedro Henrique com ☕  
+## Diferenciais implementados 🫰
+
+- Arquitetura em camadas
+- DTOs
+- MapStruct
+- Tratamento global de exceções
+- Scheduler
+- Actuator
+- OpenAPI
+- Bean Validation
+- Basic Authentication
+- Logs
+- Idempotência
+
+---
+
+Desenvolvido com ☕ por Pedro Henrique 🧑‍💻.

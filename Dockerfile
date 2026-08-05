@@ -1,25 +1,24 @@
-# ==========================
-# Etapa 1 - Build
-# ==========================
-FROM eclipse-temurin:21-jdk AS builder
-
+# Estágio 1: Build da aplicação usando Maven
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-COPY . .
+# Copia o pom e baixa as dependências primeiro (aproveita cache do Docker)
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-RUN chmod +x mvnw || true
+# Copia o código fonte e faz o build pulando os testes para ser mais rápido
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-RUN ./mvnw clean package -DskipTests || mvn clean package -DskipTests
-
-# ==========================
-# Etapa 2 - Runtime
-# ==========================
-FROM eclipse-temurin:21-jre
-
+# Estágio 2: Imagem final para execução
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-COPY --from=builder /app/target/*.jar app.jar
+# Copia apenas o arquivo .jar gerado no Estágio 1
+COPY --from=build /app/target/*.jar app.jar
 
+# Expõe a porta
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+# Comando de inicialização
+ENTRYPOINT ["java", "-jar", "app.jar"]
